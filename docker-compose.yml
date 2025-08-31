@@ -1,0 +1,41 @@
+name: micro-blog
+
+services:
+  micro-blog-db:
+    image: postgres:16.1
+    shm_size: 128mb
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - "micro-blog-db-vulume:/dev/shm"
+    networks:
+      micro-blog-network:
+        aliases:
+          - "sql"
+    env_file:
+      - .env
+
+  micro-blog-pgadmin:
+    image: dpage/pgadmin4:8.1
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@mail.com"
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "15432:80"
+    depends_on:
+      - micro-blog-db
+    networks:
+      - micro-blog-network
+    env_file:
+      - .env
+
+volumes:
+  micro-blog-db-vulume:
+
+networks:
+  micro-blog-network:
+    driver: bridge
