@@ -7,11 +7,9 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
     environment:
-      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
     volumes:
-      - "micro-blog-db-vulume:/dev/shm"
+      - "micro-blog-db-volume:/dev/shm"
     networks:
       micro-blog-network:
         aliases:
@@ -34,7 +32,7 @@ services:
       - .env
 
 volumes:
-  micro-blog-db-vulume:
+  micro-blog-db-volume:
 
 networks:
   micro-blog-network:
