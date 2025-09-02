@@ -2,6 +2,7 @@ package com.macedo.micro_blog.application.controllers;
 
 import com.macedo.micro_blog.application.contracts.requests.CreatePostRequest;
 import com.macedo.micro_blog.application.contracts.responses.PostDTO;
+import com.macedo.micro_blog.application.services.PostService;
 import com.macedo.micro_blog.domain.entities.Author;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.AuthorRepository;
@@ -16,10 +17,13 @@ import java.util.Optional;
 @RequestMapping("posts")
 public class PostController {
 
+    private final PostService postService;
+
     private final AuthorRepository authorRepository;
     private final PostRepository postRepository;
 
-    public PostController(AuthorRepository authorRepository, PostRepository postRepository) {
+    public PostController(PostService postService, AuthorRepository authorRepository, PostRepository postRepository) {
+        this.postService = postService;
         this.authorRepository = authorRepository;
         this.postRepository = postRepository;
     }
@@ -38,15 +42,8 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPostById(@PathVariable int id) {
         try {
-            Optional<Post> postOptional = postRepository.findById(id);
-
-            if (postOptional.isEmpty())
-                throw new RuntimeException("There is no post with this id.");
-
-            PostDTO mappedPost = new PostDTO(postOptional.get());
-
-            return ResponseEntity.ok(mappedPost);
-
+            PostDTO post = postService.getPostById(id);
+            return ResponseEntity.ok(post);
         } catch (Exception exception) {
             return ResponseEntity.notFound().build();
         }
