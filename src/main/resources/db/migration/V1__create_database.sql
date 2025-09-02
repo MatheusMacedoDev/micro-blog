@@ -1,10 +1,10 @@
 CREATE TABLE authors (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL
 );
 
 CREATE TABLE posts (
-    id  INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     author_id INTEGER NOT NULL,
     title VARCHAR NOT NULL,
     content TEXT NOT NULL,
