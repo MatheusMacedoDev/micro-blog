@@ -2,6 +2,7 @@ package com.macedo.micro_blog.domain.entities;
 
 import com.macedo.micro_blog.application.contracts.requests.CreatePostRequest;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "posts")
 @NoArgsConstructor
+@Getter
 public class Post {
 
     @Id
