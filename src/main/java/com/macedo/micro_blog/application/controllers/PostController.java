@@ -35,6 +35,23 @@ public class PostController {
         return ResponseEntity.ok(mappedPosts);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable int id) {
+        try {
+            Optional<Post> postOptional = postRepository.findById(id);
+
+            if (postOptional.isEmpty())
+                throw new RuntimeException("There is no post with this id.");
+
+            PostDTO mappedPost = new PostDTO(postOptional.get());
+
+            return ResponseEntity.ok(mappedPost);
+
+        } catch (Exception exception) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Void> createPost(@RequestBody CreatePostRequest request) {
         try {
