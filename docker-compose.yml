@@ -38,24 +38,18 @@ services:
       - "${REDIS_PORT}:${REDIS_PORT}"
 
   micro_blog-rabbitmq:
-    image: rabbitmq:4.1.4
+    image: rabbitmq:4.1.4-management
     restart: always
+    hostname: rabbitmq_host
     ports:
       - "${RABBITMQ_PORT_1}:${RABBITMQ_PORT_1}"
       - "${RABBITMQ_PORT_2}:${RABBITMQ_PORT_2}"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASSWORD: ${RABBITMQ_PASSWORD}
-    configs:
-      - source: rabbitmq-plugins
-        target: /edt/rabbitmq/enabled_plugins
     volumes:
       - rabbitmq-lib:/var/lib/rabbitmq/
       - rabbitmq-log:/var/log/rabbitmq/
-
-configs:
-  rabbitmq-plugins:
-    content: "[rabbitmq_management]."
 
 volumes:
   micro-blog-db-volume:
