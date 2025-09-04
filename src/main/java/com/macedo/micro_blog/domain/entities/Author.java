@@ -19,11 +19,14 @@ public class Author {
 
     private String name;
 
+    private String email;
+
     @OneToMany(mappedBy = "id")
     private List<Post> posts;
 
     public Author(CreateAuthorRequest request) {
         this.name = request.name();
+        this.email = request.email();
     }
 
 }
