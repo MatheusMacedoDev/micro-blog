@@ -3,19 +3,22 @@ package com.macedo.micro_blog.application.services;
 import com.macedo.micro_blog.application.contracts.responses.PostDTO;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
+import com.macedo.micro_blog.infra.rabbitmq.EmailDto;
+import com.macedo.micro_blog.infra.rabbitmq.RabbitEmailPublisher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Text;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
-    private final PostRepository postRepository;
+    private final RabbitEmailPublisher emailPublisher;
 
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final PostRepository postRepository;
 
     @Cacheable(value = "posts", key = "#id")
     public PostDTO getPostById(int id) {
@@ -25,5 +28,9 @@ public class PostService {
             throw new RuntimeException("There is no post with this id.");
 
         return new PostDTO(postOptional.get());
+    }
+
+    public void publishEmail(EmailDto emailDto) {
+        emailPublisher.publish(emailDto);
     }
 }

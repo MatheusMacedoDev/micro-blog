@@ -7,6 +7,8 @@ import com.macedo.micro_blog.domain.entities.Author;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.AuthorRepository;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
+import com.macedo.micro_blog.infra.rabbitmq.EmailDto;
+import com.macedo.micro_blog.infra.rabbitmq.RabbitEmailPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +63,12 @@ public class PostController {
         } catch (RuntimeException exception) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/send-email")
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto) {
+        postService.publishEmail(emailDto);
+        return ResponseEntity.ok().build();
     }
 
 }
