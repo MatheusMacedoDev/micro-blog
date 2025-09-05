@@ -2,6 +2,7 @@ package com.macedo.micro_blog.domain.entities;
 
 import com.macedo.micro_blog.application.contracts.requests.CreateAuthorRequest;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ public class Author {
 
     private String name;
 
+    @NotNull
     private String email;
 
     @OneToMany(mappedBy = "id")
