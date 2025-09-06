@@ -28,8 +28,6 @@ public class MailService {
 
     private final TemplateEngine hmtlTemplateEngine;
 
-    private final NewPostMail newPostMail;
-
     public void sendNewPostEmail(Post post, List<Author> authors) throws MessagingException, UnsupportedEncodingException {
 
         String mailFrom = environment.getProperty("spring.mail.properties.smtp.from");

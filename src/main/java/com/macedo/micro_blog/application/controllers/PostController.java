@@ -7,8 +7,6 @@ import com.macedo.micro_blog.domain.entities.Author;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.AuthorRepository;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
-import com.macedo.micro_blog.infra.rabbitmq.EmailDto;
-import com.macedo.micro_blog.infra.rabbitmq.RabbitEmailPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,8 +64,17 @@ public class PostController {
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto) {
-        postService.publishEmail(emailDto);
+    public ResponseEntity<Void> sendEmail() {
+        Optional<Author> authorOptional = authorRepository.findById(1);
+        Author author = authorOptional.get();
+
+        Post post = new Post(
+            new CreatePostRequest(author.getId(), "Um título qualquer", "Quisque in molestie dolor. Maecenas vestibulum, dolor quis ornare molestie, nunc tellus volutpat sem, nec volutpat diam leo non odio. Pellentesque blandit metus et nisl hendrerit condimentum. Maecenas id velit ut leo suscipit posuere. Phasellus eu ante vel lacus hendrerit viverra. Aenean aliquet leo vel nulla dapibus placerat. Maecenas felis ipsum, ultricies et venenatis eget, pulvinar vitae dolor. Proin at quam bibendum, consectetur mauris in, pretium ex. Curabitur pharetra nunc ut mi maximus, vitae rutrum metus lacinia. Quisque a lorem nulla. Vestibulum commodo euismod nulla quis auctor. Nulla feugiat ligula ligula, vel congue justo rhoncus quis. In vel urna pharetra, vestibulum nisl sit amet, condimentum urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras maximus quam eget accumsan faucibus. Pellentesque magna dui, facilisis a est sed, eleifend pulvinar nibh. "),
+            author
+        );
+
+        postService.publishEmail(post);
+
         return ResponseEntity.ok().build();
     }
 
