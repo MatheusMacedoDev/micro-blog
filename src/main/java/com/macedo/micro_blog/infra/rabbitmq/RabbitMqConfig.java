@@ -17,7 +17,7 @@ public class RabbitMqConfig {
     @Bean
     public SimpleMessageConverter simpleMessageConverter() {
         SimpleMessageConverter converter = new SimpleMessageConverter();
-        converter.setAllowedListPatterns(List.of("com.macedo.micro_blog.*", "java.util.*"));
+        converter.setAllowedListPatterns(List.of("com.macedo.micro_blog.*", "java.util.*", "java.sql.*"));
         return converter;
     }
 

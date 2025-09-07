@@ -73,7 +73,9 @@ public class PostController {
             author
         );
 
-        postService.publishEmail(post);
+        PostDTO postDTO = new PostDTO(post);
+
+        postService.publishEmail(postDTO);
 
         return ResponseEntity.ok().build();
     }

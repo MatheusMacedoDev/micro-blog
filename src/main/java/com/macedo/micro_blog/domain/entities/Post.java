@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Table(name = "posts")
 @NoArgsConstructor
 @Getter
-public class Post implements Serializable{
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

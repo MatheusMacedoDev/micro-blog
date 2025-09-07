@@ -28,7 +28,7 @@ public class PostService {
         return new PostDTO(postOptional.get());
     }
 
-    public void publishEmail(Post post) {
+    public void publishEmail(PostDTO post) {
         emailPublisher.publish(post);
     }
 }
