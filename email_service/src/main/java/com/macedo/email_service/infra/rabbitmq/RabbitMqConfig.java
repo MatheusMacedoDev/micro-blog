@@ -1,4 +1,4 @@
-package com.macedo.email_service.services.rabbitmq;
+package com.macedo.email_service.infra.rabbitmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Queue;

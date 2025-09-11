@@ -1,7 +1,8 @@
-package com.macedo.email_service.services.mail;
+package com.macedo.email_service.mail;
 
-import com.macedo.email_service.domain.entities.Author;
+import com.macedo.email_service.dtos.AuthorDTO;
 import com.macedo.email_service.dtos.PostDTO;
+import com.macedo.email_service.infra.api_service.ApiServiceClient;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -22,12 +23,17 @@ import java.util.List;
 public class MailService {
 
     private final Environment environment;
-
     private final JavaMailSender mailSender;
-
     private final TemplateEngine hmtlTemplateEngine;
 
-    public void sendNewPostEmail(PostDTO post, List<Author> authors) throws MessagingException, UnsupportedEncodingException {
+    private final ApiServiceClient apiServiceClient;
+
+    public void handleNewPostEmail(PostDTO post) throws MessagingException, UnsupportedEncodingException {
+        List<AuthorDTO> authors = apiServiceClient.getAllAuthors();
+        sendNewPostEmail(post, authors);
+    }
+
+    private void sendNewPostEmail(PostDTO post, List<AuthorDTO> authors) throws MessagingException, UnsupportedEncodingException {
 
         String mailFrom = environment.getProperty("spring.mail.username");
         String mailFromName = environment.getProperty("mail.from.name", "Identity");
@@ -38,7 +44,7 @@ public class MailService {
         InternetAddress[] internetAddresses = new InternetAddress[authors.size()];
 
         for (int i = 0; i < authors.size(); i++) {
-            internetAddresses[i] = new InternetAddress(authors.get(i).getEmail());
+            internetAddresses[i] = new InternetAddress(authors.get(i).email());
         }
 
         messageHelper.setBcc(internetAddresses);

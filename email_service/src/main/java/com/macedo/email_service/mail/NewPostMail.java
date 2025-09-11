@@ -1,4 +1,4 @@
-package com.macedo.email_service.services.mail;
+package com.macedo.email_service.mail;
 
 import com.macedo.email_service.dtos.PostDTO;
 import org.springframework.stereotype.Component;
