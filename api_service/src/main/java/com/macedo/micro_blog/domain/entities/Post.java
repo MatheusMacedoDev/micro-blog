@@ -4,6 +4,7 @@ import com.macedo.micro_blog.application.contracts.requests.CreatePostRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -12,7 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "posts")
 @NoArgsConstructor
 @Getter
-public class Post {
+public class Post implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,8 @@ public class Post {
 
     private Timestamp publishedAt;
 
+    private int views;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
@@ -33,6 +36,7 @@ public class Post {
         this.content = request.content();
         this.publishedAt = new Timestamp(System.currentTimeMillis());
         this.author = author;
+        this.views = 0;
     }
 
 }

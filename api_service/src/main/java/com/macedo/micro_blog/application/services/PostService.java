@@ -4,8 +4,11 @@ import com.macedo.micro_blog.application.contracts.responses.PostDTO;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
 import com.macedo.micro_blog.infra.rabbitmq.RabbitEmailPublisher;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,14 +21,16 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    @Cacheable(value = "posts", key = "#id")
-    public PostDTO getPostById(int id) {
-        Optional<Post> postOptional = postRepository.findById(id);
+    private final PostCacheService postCacheService;
 
-        if (postOptional.isEmpty())
-            throw new RuntimeException("There is no post with this id.");
+    @Transactional
+    public PostDTO getPostByIdHandler(int id) {
+        Post post = postCacheService.getPostById(id);
+        PostDTO mappedPost = new PostDTO(post);
 
-        return new PostDTO(postOptional.get());
+        postRepository.addViewToPost(id);
+
+        return mappedPost;
     }
 
     public void publishEmail(PostDTO post) {

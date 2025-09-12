@@ -5,7 +5,7 @@ import com.macedo.micro_blog.domain.entities.Post;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public record PostDTO(int id, String title, AuthorDTO author, String content, Timestamp publishedAt) implements Serializable {
+public record PostDTO(int id, String title, AuthorDTO author, String content, Timestamp publishedAt, int views) implements Serializable {
 
     public PostDTO(Post post) {
         this(
@@ -13,7 +13,8 @@ public record PostDTO(int id, String title, AuthorDTO author, String content, Ti
             post.getTitle(),
             new AuthorDTO(post.getAuthor()),
             post.getContent(),
-            post.getPublishedAt()
+            post.getPublishedAt(),
+            post.getViews()
         );
     }
 

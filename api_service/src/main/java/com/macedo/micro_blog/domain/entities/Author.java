@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "authors")
 @NoArgsConstructor
 @Getter
-public class Author {
+public class Author implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

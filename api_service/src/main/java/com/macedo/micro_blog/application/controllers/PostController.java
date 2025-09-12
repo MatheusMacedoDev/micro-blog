@@ -7,14 +7,18 @@ import com.macedo.micro_blog.domain.entities.Author;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.AuthorRepository;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("posts")
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -42,9 +46,11 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPostById(@PathVariable int id) {
         try {
-            PostDTO post = postService.getPostById(id);
+            PostDTO post = postService.getPostByIdHandler(id);
+
             return ResponseEntity.ok(post);
         } catch (Exception exception) {
+            log.error(exception.toString());
             return ResponseEntity.notFound().build();
         }
     }
@@ -57,27 +63,18 @@ public class PostController {
 
             postRepository.save(post);
 
-            return ResponseEntity.ok().build();
+            PostDTO postDTO = new PostDTO(post);
+            postService.publishEmail(postDTO);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(post.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).build();
         } catch (RuntimeException exception) {
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    @PostMapping("/send-email")
-    public ResponseEntity<Void> sendEmail() {
-        Optional<Author> authorOptional = authorRepository.findById(1);
-        Author author = authorOptional.get();
-
-        Post post = new Post(
-            new CreatePostRequest(author.getId(), "Um título qualquer", "Quisque in molestie dolor. Maecenas vestibulum, dolor quis ornare molestie, nunc tellus volutpat sem, nec volutpat diam leo non odio. Pellentesque blandit metus et nisl hendrerit condimentum. Maecenas id velit ut leo suscipit posuere. Phasellus eu ante vel lacus hendrerit viverra. Aenean aliquet leo vel nulla dapibus placerat. Maecenas felis ipsum, ultricies et venenatis eget, pulvinar vitae dolor. Proin at quam bibendum, consectetur mauris in, pretium ex. Curabitur pharetra nunc ut mi maximus, vitae rutrum metus lacinia. Quisque a lorem nulla. Vestibulum commodo euismod nulla quis auctor. Nulla feugiat ligula ligula, vel congue justo rhoncus quis. In vel urna pharetra, vestibulum nisl sit amet, condimentum urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras maximus quam eget accumsan faucibus. Pellentesque magna dui, facilisis a est sed, eleifend pulvinar nibh. "),
-            author
-        );
-
-        PostDTO postDTO = new PostDTO(post);
-
-        postService.publishEmail(postDTO);
-
-        return ResponseEntity.ok().build();
     }
 
 }
