@@ -1,5 +1,6 @@
 package com.macedo.micro_blog.application.services;
 
+import com.macedo.micro_blog.application.contracts.responses.PostDTO;
 import com.macedo.micro_blog.domain.entities.Post;
 import com.macedo.micro_blog.domain.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,12 @@ public class PostCacheService {
     private final PostRepository postRepository;
 
     @Cacheable(value = "posts", key = "#id")
-    public Post getPostById(int id) {
+    public PostDTO getPostById(int id) {
         Optional<Post> postOptional = postRepository.findById(id);
 
         if (postOptional.isEmpty())
             throw new RuntimeException("There is no post with this id.");
 
-        return postOptional.get();
+        return new PostDTO(postOptional.get());
     }
 }

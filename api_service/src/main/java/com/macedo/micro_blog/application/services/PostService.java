@@ -25,12 +25,11 @@ public class PostService {
 
     @Transactional
     public PostDTO getPostByIdHandler(int id) {
-        Post post = postCacheService.getPostById(id);
-        PostDTO mappedPost = new PostDTO(post);
+        PostDTO post = postCacheService.getPostById(id);
 
-        postRepository.addViewToPost(id);
+        postRepository.addViewToPost(post.id());
 
-        return mappedPost;
+        return post;
     }
 
     public void publishEmail(PostDTO post) {
